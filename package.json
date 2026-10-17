@@ -50,6 +50,14 @@
           { "filenamePattern": "*.apd" }
         ],
         "priority": "default"
+      },
+      {
+        "viewType": "simutrans-addon-tools.pakViewer",
+        "displayName": "%customEditor.pakViewer%",
+        "selector": [
+          { "filenamePattern": "*.pak" }
+        ],
+        "priority": "default"
       }
     ]
   },

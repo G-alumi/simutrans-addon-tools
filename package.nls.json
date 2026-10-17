@@ -2,5 +2,6 @@
   "displayName": "Simutrans Addon Tools",
   "description": "Tools for developing Simutrans addons: image viewer with Simutrans special colors, pak viewer and dat language support",
   "command.openImage": "Open in Simutrans Image Viewer",
-  "customEditor.imageViewer": "Simutrans Image Viewer"
+  "customEditor.imageViewer": "Simutrans Image Viewer",
+  "customEditor.pakViewer": "Simutrans pak Viewer"
 }

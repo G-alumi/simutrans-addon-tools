@@ -1,0 +1,152 @@
+/* 色はVS Codeのテーマ変数を使う(ライト/ダーク/ハイコントラストの判別は不要) */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--vscode-editor-background);
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  display: flex;
+  overflow: hidden;
+}
+
+/* ---- 左: ツリー ---- */
+#tree-pane {
+  width: 320px;
+  min-width: 160px;
+  max-width: 70vw;
+  resize: horizontal;
+  overflow: auto;
+  background: var(--vscode-sideBar-background);
+  border-right: 1px solid var(--vscode-panel-border);
+  flex-shrink: 0;
+}
+#tree { outline: none; padding: 4px 0; }
+.treeitem {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding-right: 8px;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+.treeitem:hover { background: var(--vscode-list-hoverBackground); }
+.treeitem[aria-selected="true"] { background: var(--vscode-list-inactiveSelectionBackground); }
+#tree:focus-within .treeitem[aria-selected="true"] { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.treeitem:focus { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; }
+.twisty { width: 16px; text-align: center; flex-shrink: 0; color: var(--vscode-descriptionForeground); font-size: 10px; }
+.type-badge {
+  font-family: var(--vscode-editor-font-family);
+  font-size: 10px;
+  padding: 0 4px;
+  margin-right: 6px;
+  border-radius: 3px;
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+}
+
+/* ---- 右: 詳細 ---- */
+#detail-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#detail-title {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+#detail-title:empty { display: none; }
+#detail-body { flex: 1; overflow: auto; padding: 8px 12px; }
+h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--vscode-descriptionForeground); margin: 12px 0 4px; }
+.note { color: var(--vscode-editorWarning-foreground); margin: 4px 0; }
+
+table.props { border-collapse: collapse; width: 100%; max-width: 720px; }
+table.props th {
+  text-align: left; font-weight: normal; color: var(--vscode-descriptionForeground);
+  border-bottom: 1px solid var(--vscode-panel-border); padding: 3px 8px;
+}
+table.props td { padding: 3px 8px; vertical-align: top; }
+table.props td.name { width: 30%; }
+table.props td.value { font-family: var(--vscode-editor-font-family); white-space: pre-wrap; word-break: break-all; }
+table.props td.ftype { width: 80px; color: var(--vscode-descriptionForeground); font-size: 11px; }
+table.props tr.row:hover { background: var(--vscode-list-hoverBackground); }
+table.props tr.row:focus { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+table.props tr.row:focus td.ftype { color: inherit; }
+
+.zoom-bar { display: flex; gap: 4px; margin: 4px 0 8px; align-items: center; }
+.zoom-bar button {
+  background: var(--vscode-editorWidget-background); color: var(--vscode-foreground); border: 1px solid var(--vscode-panel-border);
+  padding: 2px 8px; border-radius: 3px; cursor: pointer; font: inherit;
+}
+.zoom-bar button[aria-pressed="true"] { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+.zoom-bar button:focus-visible { outline: 1px solid var(--vscode-focusBorder); }
+.checker {
+  display: inline-block;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%),
+    linear-gradient(45deg, #cccccc 25%, transparent 25%, transparent 75%, #cccccc 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+  line-height: 0;
+}
+canvas.preview { image-rendering: pixelated; display: block; }
+canvas.preview:focus { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+.thumb { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; font-size: 11px; color: var(--vscode-descriptionForeground); }
+.thumb:hover { color: var(--vscode-foreground); }
+.thumb:focus { outline: 1px solid var(--vscode-focusBorder); outline-offset: 2px; color: var(--vscode-foreground); }
+.empty { color: var(--vscode-descriptionForeground); }
+
+/* ---- 読み込みエラー ---- */
+#message {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 80vw;
+  white-space: pre-wrap;
+  color: var(--vscode-errorForeground);
+}
+#message.show { display: block; }
+
+/* ---- 右クリックメニュー ---- */
+#menu {
+  position: fixed;
+  display: none;
+  min-width: 180px;
+  padding: 4px 0;
+  background: var(--vscode-menu-background);
+  color: var(--vscode-menu-foreground);
+  border: 1px solid var(--vscode-menu-border, var(--vscode-panel-border));
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--vscode-widget-shadow);
+  z-index: 100;
+  outline: none;
+}
+#menu button {
+  display: block; width: 100%; padding: 4px 20px; text-align: left;
+  background: none; border: none; color: inherit; font: inherit; cursor: pointer; white-space: nowrap;
+}
+#menu button:hover, #menu button:focus { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); outline: none; }
+#menu .hint { float: right; margin-left: 24px; opacity: 0.7; }
+
+/* ---- 通知 ---- */
+#toast {
+  position: fixed; right: 16px; bottom: 16px; max-width: 50vw;
+  padding: 6px 12px; border-radius: 4px;
+  background: var(--vscode-editorWidget-background); border: 1px solid var(--vscode-panel-border);
+  box-shadow: 0 2px 8px var(--vscode-widget-shadow);
+  opacity: 0; transition: opacity 0.15s; pointer-events: none;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#toast.show { opacity: 1; }
+#toast.error { border-color: var(--vscode-inputValidation-errorBorder); }
