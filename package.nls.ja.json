@@ -1,0 +1,6 @@
+{
+  "displayName": "Simutrans Addon Tools",
+  "description": "Simutransアドオン開発用ツール: 特別色に対応した画像ビュワー、pakビュワー、datの言語サポート",
+  "command.openImage": "Simutrans画像ビュワーで開く",
+  "customEditor.imageViewer": "Simutrans画像ビュワー"
+}

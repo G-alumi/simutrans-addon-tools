@@ -1,0 +1,18 @@
+{
+  "Please select an image file.": "画像ファイルを指定してください。",
+  "Copied to clipboard.": "クリップボードにコピーしました",
+  "Copy failed: {0}": "コピーに失敗しました: {0}",
+  "Failed to open the image.": "画像を開けませんでした",
+  "The image could not be decoded.": "画像をデコードできませんでした(対応していない形式か、ファイルが壊れています)",
+  "File name": "ファイル名",
+  "Format": "フォーマット",
+  "File size": "ファイルサイズ",
+  "Width": "横",
+  "Height": "縦",
+  "Copy to clipboard": "クリップボードにコピー",
+  "Simutrans display": "Simutrans表示",
+  "Minimize": "最小化",
+  "Expand": "展開",
+  "Player colors": "プレイヤーカラー",
+  "Night": "夜間"
+}
