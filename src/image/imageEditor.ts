@@ -28,7 +28,9 @@ type ImagePayload =
 /** 画面から届くメッセージ */
 type WebviewMessage =
 	| { type: 'ready' }
-	| { type: 'decodeFailed'; message: string };
+	| { type: 'decodeFailed'; message: string }
+	| { type: 'loaded'; width: number; height: number }
+	| { type: 'status'; zoom: string; coord: string };
 
 export class ImageEditorProvider implements vscode.CustomReadonlyEditorProvider {
 	static readonly viewType = 'simutrans-addon-tools.imageViewer';
@@ -51,12 +53,18 @@ export class ImageEditorProvider implements vscode.CustomReadonlyEditorProvider 
 		};
 		webview.html = getWebviewContent(webview, mediaUri, path.basename(uri.fsPath));
 
+		// ステータスバーにマウスの位置・ファイル名・画像の大きさ・ファイルサイズ・倍率を出す
+		const status = new ImageStatusBar(path.basename(uri.fsPath));
+		webviewPanel.onDidChangeViewState(() => status.setVisible(webviewPanel.active));
+		webviewPanel.onDidDispose(() => status.dispose());
+
 		// 1回目の読み込みに失敗したら1回だけ読み直し、それでも失敗したらエラーを表示する
 		let attempt = 0;
 		const load = async () => {
 			attempt++;
 			try {
 				const [stat, image] = await Promise.all([vscode.workspace.fs.stat(uri), readImage(uri)]);
+				status.setFileSize(stat.size);
 				await webview.postMessage({
 					type: 'load',
 					fileInfo: {
@@ -89,9 +97,86 @@ export class ImageEditorProvider implements vscode.CustomReadonlyEditorProvider 
 				case 'decodeFailed':
 					fail(msg.message);
 					break;
+				case 'loaded':
+					status.setImageSize(msg.width, msg.height);
+					status.setVisible(webviewPanel.active);
+					break;
+				case 'status':
+					status.setZoom(msg.zoom);
+					status.setCoord(msg.coord);
+					break;
 			}
 		});
 	}
+}
+
+/** 画像を開いているエディターがアクティブな間だけ出すステータスバーの項目 */
+class ImageStatusBar {
+	private readonly fileName = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 104);
+	private readonly coord = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 105);
+	private readonly size = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 103);
+	private readonly fileSize = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 102);
+	private readonly zoom = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 101);
+	private visible = false;
+
+	constructor(fileName: string) {
+		this.fileName.name = this.fileName.tooltip = vscode.l10n.t('File name');
+		this.fileName.text = fileName;
+		this.coord.name = this.coord.tooltip = vscode.l10n.t('Pointer position');
+		this.size.name = this.size.tooltip = vscode.l10n.t('Image size');
+		this.fileSize.name = this.fileSize.tooltip = vscode.l10n.t('File size');
+		this.zoom.name = this.zoom.tooltip = vscode.l10n.t('Zoom');
+		this.zoom.text = '100%';
+	}
+
+	setCoord(text: string) {
+		this.coord.text = text;
+		this.update();
+	}
+
+	setImageSize(width: number, height: number) {
+		this.size.text = `${width}x${height}`;
+		this.update();
+	}
+
+	setFileSize(bytes: number) {
+		this.fileSize.text = formatBytes(bytes);
+		this.update();
+	}
+
+	setZoom(text: string) {
+		this.zoom.text = text;
+		this.update();
+	}
+
+	setVisible(visible: boolean) {
+		this.visible = visible;
+		this.update();
+	}
+
+	private update() {
+		for (const item of [this.fileName, this.coord, this.size, this.fileSize, this.zoom]) {
+			if (this.visible && item.text) {
+				item.show();
+			} else {
+				item.hide();
+			}
+		}
+	}
+
+	dispose() {
+		this.fileName.dispose();
+		this.coord.dispose();
+		this.size.dispose();
+		this.fileSize.dispose();
+		this.zoom.dispose();
+	}
+}
+
+function formatBytes(bytes: number): string {
+	if (bytes < 1024) { return `${bytes} B`; }
+	if (bytes < 1024 * 1024) { return `${(bytes / 1024).toFixed(1)} KB`; }
+	return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 export async function readImage(uri: vscode.Uri): Promise<ImagePayload> {

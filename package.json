@@ -13,27 +13,6 @@
   "main": "./dist/extension.js",
   "l10n": "./l10n",
   "contributes": {
-    "commands": [
-      {
-        "command": "simutrans-addon-tools.openImage",
-        "title": "%command.openImage%"
-      }
-    ],
-    "menus": {
-      "explorer/context": [
-        {
-          "command": "simutrans-addon-tools.openImage",
-          "when": "resourceExtname =~ /^\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico|apd)$/i",
-          "group": "navigation"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "simutrans-addon-tools.openImage",
-          "when": "false"
-        }
-      ]
-    },
     "customEditors": [
       {
         "viewType": "simutrans-addon-tools.imageViewer",

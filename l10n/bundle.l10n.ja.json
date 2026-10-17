@@ -1,5 +1,4 @@
 {
-  "Please select an image file.": "画像ファイルを指定してください。",
   "Copied to clipboard.": "クリップボードにコピーしました",
   "Copy failed: {0}": "コピーに失敗しました: {0}",
   "Failed to open the image.": "画像を開けませんでした",
@@ -14,7 +13,7 @@
   "Minimize": "最小化",
   "Expand": "展開",
   "Player colors": "プレイヤーカラー",
-  "Night": "夜間",
+  "Night mode": "夜間モード",
   "Unknown node type. The game skips this node and its children.": "未知の種別です。ゲームはこのノードと子ノードを読み飛ばします",
   "Unknown version {0}. The fields cannot be read.": "未対応のバージョン({0})のため、フィールドを読めません",
   "{0} bytes at the end of the body were not read.": "ボディの末尾 {0} バイトは読んでいません",
@@ -38,5 +37,7 @@
   "Copied: {0}": "コピーしました: {0}",
   "Copied the image.": "画像をコピーしました",
   "Copied the image with transparency.": "画像を透過させてコピーしました",
-  "pak structure": "pakの構造"
+  "pak structure": "pakの構造",
+  "Image size": "画像の大きさ",
+  "Pointer position": "マウスの位置"
 }

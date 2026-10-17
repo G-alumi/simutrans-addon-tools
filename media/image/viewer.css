@@ -21,16 +21,6 @@ canvas {
   height: 100%;
   user-select: none;
 }
-#info {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.8em;
-  opacity: 0.8;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.5);
-}
 #message {
   display: none;
   position: fixed;
@@ -129,6 +119,7 @@ canvas {
   box-shadow: 0 2px 8px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.36));
   font-size: 0.85em;
   z-index: 800;
+  user-select: none;
 }
 #special-header {
   display: flex;

@@ -58,7 +58,6 @@ export function getWebviewContent(webview: vscode.Webview, mediaUri: vscode.Uri,
     <canvas id="canvas"></canvas>
   </div>
   <div id="message" role="alert"></div>
-  <div id="info"><span id="filename">${escapeHtml(fileName)}</span> <span id="scale-label">100%</span> <span id="coord-label"></span></div>
   <div id="overlay">
     <table>
       <tr><td>${t('File name')}</td><td id="ov-filename"></td></tr>
@@ -78,7 +77,7 @@ export function getWebviewContent(webview: vscode.Webview, mediaUri: vscode.Uri,
     </div>
     <div id="special-body">
       <label><input type="checkbox" id="opt-player"> ${t('Player colors')}</label>
-      <label><input type="checkbox" id="opt-night"> ${t('Night')}</label>
+      <label><input type="checkbox" id="opt-night"> ${t('Night mode')}</label>
     </div>
   </div>
   <div id="toast" role="status"></div>

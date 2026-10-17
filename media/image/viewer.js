@@ -12,8 +12,6 @@ const container = /** @type {HTMLElement} */ (document.getElementById('container
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('canvas'));
 const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 const messageEl = /** @type {HTMLElement} */ (document.getElementById('message'));
-const scaleLabel = /** @type {HTMLElement} */ (document.getElementById('scale-label'));
-const coordLabel = /** @type {HTMLElement} */ (document.getElementById('coord-label'));
 
 /** 元の画像(コピーにはこれを使う) @type {ImageBitmap | null} */
 let bitmap = null;
@@ -45,6 +43,7 @@ window.addEventListener('message', async (event) => {
     }
     showMessage('');
     updateOverlay();
+    vscode.postMessage({ type: 'loaded', width: bitmap.width, height: bitmap.height });
     requestDraw();
   } else if (msg.type === 'error') {
     showMessage(`${L10N.openFailed}\n${msg.message}`);
@@ -144,8 +143,14 @@ function draw() {
   }
 }
 
+/** VS Codeのステータスバーに出す倍率・マウス位置を拡張機能に送る */
+let statusCoord = '';
+function postStatus() {
+  vscode.postMessage({ type: 'status', zoom: `${Math.round(scale * 100)}%`, coord: statusCoord });
+}
+
 function updateScaleLabel() {
-  scaleLabel.textContent = `${Math.round(scale * 100)}%`;
+  postStatus();
 }
 
 // 表示領域の大きさが変わったらcanvasの大きさを合わせる
@@ -206,6 +211,10 @@ window.addEventListener('mouseup', (e) => {
 document.addEventListener('mouseleave', () => {
   isPanning = false;
   container.classList.remove('panning');
+  if (statusCoord) {
+    statusCoord = '';
+    postStatus();
+  }
 });
 
 // マウス移動: 移動 & 座標表示
@@ -221,7 +230,11 @@ window.addEventListener('mousemove', (e) => {
   const { s, ox, oy } = layout();
   const imgX = Math.floor(((e.clientX - rect.left) * dpr - ox) / s);
   const imgY = Math.floor(((e.clientY - rect.top) * dpr - oy) / s);
-  coordLabel.textContent = (imgX >= 0 && imgX < bitmap.width && imgY >= 0 && imgY < bitmap.height) ? `(${imgX}, ${imgY})` : '';
+  const coord = (imgX >= 0 && imgX < bitmap.width && imgY >= 0 && imgY < bitmap.height) ? `${imgX}, ${imgY}` : '';
+  if (coord !== statusCoord) {
+    statusCoord = coord;
+    postStatus();
+  }
 });
 
 // ダブルクリックで元に戻す
