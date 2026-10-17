@@ -62,7 +62,8 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test:pak": "npm run compile-tests && mocha --ui tdd \"out/test/pak/**/*.test.js\""
   },
   "devDependencies": {
     "@types/mocha": "^10.0.8",
