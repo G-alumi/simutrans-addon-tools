@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Simutrans dat",
+  "scopeName": "source.simutrans-dat",
+  "comment": "makeobj の読み込み(dataobj/tabfile.cc)に合わせる: 行頭が # か半角スペースの行は読み飛ばし、行頭が - の行はオブジェクトの区切り。値の途中の # はコメントにならない",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#separator" },
+    { "include": "#obj" },
+    { "include": "#name" },
+    { "include": "#constraint" },
+    { "include": "#entry" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        { "name": "comment.line.number-sign.simutrans-dat", "match": "^#.*$" },
+        { "name": "comment.line.ignored.simutrans-dat", "match": "^ .*$" }
+      ]
+    },
+    "separator": {
+      "name": "keyword.control.separator.simutrans-dat",
+      "match": "^-.*$"
+    },
+    "obj": {
+      "match": "(?i)^(obj)\\s*(=)(.*)$",
+      "captures": {
+        "1": { "name": "keyword.other.obj.simutrans-dat" },
+        "2": { "name": "keyword.operator.assignment.simutrans-dat" },
+        "3": { "name": "support.type.obj.simutrans-dat" }
+      }
+    },
+    "name": {
+      "match": "(?i)^(name)\\s*(=)(.*)$",
+      "captures": {
+        "1": { "name": "keyword.other.name.simutrans-dat" },
+        "2": { "name": "keyword.operator.assignment.simutrans-dat" },
+        "3": { "name": "entity.name.function.simutrans-dat" }
+      }
+    },
+    "constraint": {
+      "comment": "値は車両の名前。名前に .数字 を含んでも画像の指定として扱わない",
+      "match": "(?i)^(constraint)((?:\\[[^\\]]*\\])*)\\s*(=)(.*)$",
+      "captures": {
+        "1": { "name": "variable.other.key.simutrans-dat" },
+        "2": { "patterns": [{ "include": "#parameter" }] },
+        "3": { "name": "keyword.operator.assignment.simutrans-dat" },
+        "4": { "name": "string.unquoted.value.simutrans-dat" }
+      }
+    },
+    "entry": {
+      "begin": "^([^=\\[]*?)((?:\\[[^\\]]*\\])*)\\s*(=)\\s*(>)?",
+      "beginCaptures": {
+        "1": { "name": "variable.other.key.simutrans-dat" },
+        "2": { "patterns": [{ "include": "#parameter" }] },
+        "3": { "name": "keyword.operator.assignment.simutrans-dat" },
+        "4": { "name": "keyword.operator.not-zoomable.simutrans-dat" }
+      },
+      "end": "$",
+      "contentName": "string.unquoted.value.simutrans-dat",
+      "patterns": [{ "include": "#value" }]
+    },
+    "parameter": {
+      "patterns": [
+        { "name": "punctuation.definition.parameter.simutrans-dat", "match": "[\\[\\]]" },
+        { "include": "#expansion" },
+        { "name": "constant.numeric.simutrans-dat", "match": "\\d+" },
+        { "name": "punctuation.separator.simutrans-dat", "match": "[,\\-]" },
+        { "name": "constant.language.parameter.simutrans-dat", "match": "[^\\[\\],\\-\\d\\s]+" }
+      ]
+    },
+    "expansion": {
+      "name": "variable.parameter.expansion.simutrans-dat",
+      "match": "<[^>]*>"
+    },
+    "value": {
+      "patterns": [
+        { "include": "#expansion" },
+        {
+          "comment": "画像の指定: ファイル名.行.列,x,y (ファイル名は拡張子 .png を省く)",
+          "match": "(?!-?\\d+(?:\\.\\d+)?\\s*(?:,|$))([^\\s,<>][^,<>]*?)(\\.)(\\d+|<[^>]*>)(?:(\\.)(\\d+|<[^>]*>))?(?:\\s*(,)\\s*([^,]*?)(?:\\s*(,)\\s*([^,]*?))?)?(?=\\s*(?:,|$|\\s#))",
+          "captures": {
+            "1": { "name": "string.unquoted.image.simutrans-dat" },
+            "2": { "name": "punctuation.separator.simutrans-dat" },
+            "3": { "patterns": [{ "include": "#expansion" }, { "include": "#digits" }] },
+            "4": { "name": "punctuation.separator.simutrans-dat" },
+            "5": { "patterns": [{ "include": "#expansion" }, { "include": "#digits" }] },
+            "6": { "name": "punctuation.separator.simutrans-dat" },
+            "7": { "patterns": [{ "include": "#expansion" }, { "include": "#offset" }] },
+            "8": { "name": "punctuation.separator.simutrans-dat" },
+            "9": { "patterns": [{ "include": "#expansion" }, { "include": "#offset" }] }
+          }
+        },
+        { "include": "#number" },
+        { "name": "punctuation.separator.simutrans-dat", "match": "," }
+      ]
+    },
+    "number": {
+      "name": "constant.numeric.simutrans-dat",
+      "match": "(?<![\\w.])-?\\d+(?:\\.\\d+)?(?![\\w.])"
+    },
+    "offset": {
+      "comment": "画像のオフセット(x,y)。行・列の数字と区別できるよう、数値とは別の色にする",
+      "name": "variable.other.constant.offset.simutrans-dat",
+      "match": "-?\\d+"
+    },
+    "digits": {
+      "name": "constant.numeric.simutrans-dat",
+      "match": "\\d+"
+    }
+  }
+}

@@ -9,10 +9,57 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:simutrans-dat"
+  ],
   "main": "./dist/extension.js",
   "l10n": "./l10n",
   "contributes": {
+    "languages": [
+      {
+        "id": "simutrans-dat",
+        "aliases": ["Simutrans dat", "simutrans-dat"],
+        "extensions": [".dat"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "simutrans-dat",
+        "scopeName": "source.simutrans-dat",
+        "path": "./syntaxes/dat.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "%displayName%",
+      "properties": {
+        "simutrans-addon-tools.pakSize": {
+          "type": "integer",
+          "default": 128,
+          "minimum": 16,
+          "maximum": 32765,
+          "scope": "resource",
+          "markdownDescription": "%config.pakSize%"
+        },
+        "simutrans-addon-tools.pakSizeOverrides": {
+          "type": "object",
+          "default": {},
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 16,
+            "maximum": 32765
+          },
+          "scope": "resource",
+          "markdownDescription": "%config.pakSizeOverrides%"
+        },
+        "simutrans-addon-tools.imagePreview": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.imagePreview%"
+        }
+      }
+    },
     "customEditors": [
       {
         "viewType": "simutrans-addon-tools.imageViewer",
@@ -50,7 +97,8 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "test:pak": "npm run compile-tests && mocha --ui tdd \"out/test/pak/**/*.test.js\""
+    "test:pak": "npm run compile-tests && mocha --ui tdd \"out/test/pak/**/*.test.js\"",
+    "test:dat": "npm run compile-tests && mocha --ui tdd \"out/test/dat/**/*.test.js\""
   },
   "devDependencies": {
     "@types/mocha": "^10.0.8",

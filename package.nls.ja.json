@@ -2,5 +2,8 @@
   "displayName": "Simutrans Addon Tools",
   "description": "Simutransアドオン開発用ツール: 特別色に対応した画像ビュワー、pakビュワー、datの言語サポート",
   "customEditor.imageViewer": "Simutrans画像ビュワー",
-  "customEditor.pakViewer": "Simutrans pakビュワー"
+  "customEditor.pakViewer": "Simutrans pakビュワー",
+  "config.pakSize": "datの画像をプレビューするときの1マスの大きさ(pakサイズ。128など)。オブジェクトに `cell_size=` があればそちらを使う",
+  "config.pakSizeOverrides": "datファイルごとのpakサイズ。ワークスペースのフォルダからの相対パスのglobで指定し、最初に一致したものを `#simutrans-addon-tools.pakSize#` より優先する。例: `{ \"pak256/**\": 256 }`",
+  "config.imagePreview": "datの画像の指定にマウスを乗せたとき、そのマスの画像を表示する"
 }

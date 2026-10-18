@@ -2,5 +2,8 @@
   "displayName": "Simutrans Addon Tools",
   "description": "Tools for developing Simutrans addons: image viewer with Simutrans special colors, pak viewer and dat language support",
   "customEditor.imageViewer": "Simutrans Image Viewer",
-  "customEditor.pakViewer": "Simutrans pak Viewer"
+  "customEditor.pakViewer": "Simutrans pak Viewer",
+  "config.pakSize": "The size of one image cell (the pak size, such as 128) used when previewing images from dat files. An object's `cell_size=` takes precedence.",
+  "config.pakSizeOverrides": "Pak sizes for specific dat files, as glob patterns relative to the workspace folder. The first matching pattern wins over `#simutrans-addon-tools.pakSize#`. Example: `{ \"pak256/**\": 256 }`",
+  "config.imagePreview": "Show the image of the cell when hovering over an image in dat files."
 }
