@@ -12,7 +12,7 @@ function webviewStrings(): Record<string, string> {
 		copied: vscode.l10n.t('Copied to clipboard.'),
 		copyFailed: vscode.l10n.t('Copy failed: {0}', '{0}'),
 		openFailed: vscode.l10n.t('Failed to open the image.'),
-		decodeFailed: vscode.l10n.t('The image could not be decoded.'),
+		decodeFailed: vscode.l10n.t('The image could not be decoded (unsupported format or corrupted file).'),
 		minimize: vscode.l10n.t('Minimize'),
 		expand: vscode.l10n.t('Expand'),
 	};

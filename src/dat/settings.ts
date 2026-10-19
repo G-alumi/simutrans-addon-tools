@@ -96,7 +96,7 @@ export function isImagePreviewEnabled(document: vscode.TextDocument): boolean {
 export async function toggleImagePreview(uri: string): Promise<void> {
 	const document = await vscode.workspace.openTextDocument(vscode.Uri.parse(uri));
 	const enable = !isImagePreviewEnabled(document);
-	const target = await pickTarget(document, enable ? vscode.l10n.t('Where to show the preview') : vscode.l10n.t('Where to hide the preview'), false);
+	const target = await pickTarget(document, enable ? vscode.l10n.t('Where to save the setting to show the preview') : vscode.l10n.t('Where to save the setting to hide the preview'), false);
 	if (target === undefined || target === 'file') {
 		return;
 	}

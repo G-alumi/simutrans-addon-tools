@@ -3,6 +3,7 @@ import { CHANGE_PAK_SIZE_COMMAND, CellSize, getCellSize, isImagePreviewEnabled, 
 import { parseDat } from './datDocument';
 import { PngImage } from './png';
 import { parseImageRef } from './imageRef';
+import { errorMessage } from '../shared/localize';
 
 /** datに書かれた画像の指定 */
 interface ImageSpec {
@@ -89,7 +90,7 @@ export class ImageHoverProvider implements vscode.HoverProvider {
 		if (!preview) {
 			// 画像は読まないので、ファイル名.番号 の形は行・列に直さない
 			markdown.appendText(col === undefined
-				? vscode.l10n.t('Image {0}', row)
+				? vscode.l10n.t('Image index {0}', row)
 				: vscode.l10n.t('Row {0}, column {1}', row, col));
 		} else {
 			try {
@@ -110,7 +111,7 @@ export class ImageHoverProvider implements vscode.HoverProvider {
 					markdown.appendMarkdown(`<img src="data:image/png;base64,${png.toString('base64')}" width="${size}" height="${size}">`);
 				}
 			} catch (err) {
-				markdown.appendText(vscode.l10n.t('Failed to read the image: {0}', err instanceof Error ? err.message : String(err)));
+				markdown.appendText(vscode.l10n.t('Failed to read the image: {0}', errorMessage(err)));
 			}
 		}
 

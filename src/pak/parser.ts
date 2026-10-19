@@ -2,6 +2,7 @@
 // 仕様は pakcompare の docs/pak_format.md と、Simutrans本体の descriptor/reader/*_reader.cc を参照
 
 import { FieldType, OBJ_TYPES, SCHEMAS } from './schema';
+import { LocalizableError } from '../shared/localizableError';
 
 export type FieldValue = number | bigint | Uint8Array;
 
@@ -45,7 +46,7 @@ const SIZE_ZERO_IS_VERSION_0_TYPES = new Set(['way', 'tunnel']);
 // 効果音をファイル名で指定したときの sound / sound_id の値
 const LOAD_SOUND = -2;
 
-export class PakParseError extends Error {}
+export class PakParseError extends LocalizableError {}
 
 /** ノードボディを先頭から順に読み進めるカーソル */
 class Cursor {
@@ -159,7 +160,7 @@ function decodeFields(typeName: string, version: number, cursor: Cursor): Record
 
 function readNode(buf: Uint8Array, view: DataView, pos: number): [PakNode, number] {
 	if (pos + 8 > buf.length) {
-		throw new PakParseError(`Unexpected end of file at offset ${pos}`);
+		throw new PakParseError('Unexpected end of file at offset {0}.', pos);
 	}
 	const fourcc = String.fromCharCode(...buf.subarray(pos, pos + 4));
 	const nchildren = view.getUint16(pos + 4, true);
@@ -167,13 +168,13 @@ function readNode(buf: Uint8Array, view: DataView, pos: number): [PakNode, numbe
 	pos += 8;
 	if (size === 0xFFFF) {
 		if (pos + 4 > buf.length) {
-			throw new PakParseError(`Unexpected end of file at offset ${pos}`);
+			throw new PakParseError('Unexpected end of file at offset {0}.', pos);
 		}
 		size = view.getUint32(pos, true);
 		pos += 4;
 	}
 	if (pos + size > buf.length) {
-		throw new PakParseError(`Node body exceeds end of file at offset ${pos}`);
+		throw new PakParseError('Node body exceeds the end of file at offset {0}.', pos);
 	}
 	const body = buf.subarray(pos, pos + size);
 	pos += size;
@@ -191,7 +192,7 @@ function readNode(buf: Uint8Array, view: DataView, pos: number): [PakNode, numbe
 			fields = decodeFields(typeName, version, cursor);
 		} catch (e) {
 			if (e instanceof RangeError) {
-				throw new PakParseError(`Node body of ${typeName} v${version} is too short at offset ${pos - size}`);
+				throw new PakParseError('Node body of {0} v{1} is too short at offset {2}.', typeName, version, pos - size);
 			}
 			throw e;
 		}
@@ -210,7 +211,7 @@ function readNode(buf: Uint8Array, view: DataView, pos: number): [PakNode, numbe
 export function parsePak(data: Uint8Array): PakFile {
 	const end = data.indexOf(0x1A);
 	if (end < 0 || end + 5 > data.length) {
-		throw new PakParseError('Not a pak file (header not found)');
+		throw new PakParseError('Not a pak file (header not found).');
 	}
 	const header = new TextDecoder('latin1').decode(data.subarray(0, end));
 	const view = new DataView(data.buffer, data.byteOffset, data.byteLength);

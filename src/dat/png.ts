@@ -1,4 +1,5 @@
 import * as zlib from 'zlib';
+import { LocalizableError } from '../shared/localizableError';
 
 /**
  * PNGを読んで、フィルターを戻した行のデータを持つ
@@ -19,7 +20,7 @@ export class PngImage {
 	static decode(data: Uint8Array): PngImage {
 		const buf = Buffer.from(data.buffer, data.byteOffset, data.byteLength);
 		if (buf.length < 8 || buf.readUInt32BE(0) !== 0x89504e47 || buf.readUInt32BE(4) !== 0x0d0a1a0a) {
-			throw new Error('not a PNG file');
+			throw new LocalizableError('Not a PNG file.');
 		}
 		let width = 0, height = 0, bitDepth = 0, colorType = 0;
 		let palette: Buffer = Buffer.alloc(0);
@@ -36,7 +37,7 @@ export class PngImage {
 				bitDepth = body[8];
 				colorType = body[9];
 				if (body[12] !== 0) {
-					throw new Error('interlaced PNG is not supported');
+					throw new LocalizableError('Interlaced PNG is not supported.');
 				}
 			} else if (type === 'PLTE') {
 				palette = body;
@@ -50,7 +51,7 @@ export class PngImage {
 		}
 		const channels = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[colorType];
 		if (!channels || width === 0 || height === 0) {
-			throw new Error('unsupported PNG');
+			throw new LocalizableError('Unsupported PNG format.');
 		}
 		const bpp = Math.max(1, (channels * bitDepth) >> 3);
 		const stride = Math.ceil((width * channels * bitDepth) / 8);

@@ -27,7 +27,6 @@ function webviewStrings(): Record<string, string> {
 		copyTransparent: vscode.l10n.t('Copy with Transparency'),
 		copied: vscode.l10n.t('Copied: {0}', '{0}'),
 		imageCopied: vscode.l10n.t('Copied the image.'),
-		imageCopiedTransparent: vscode.l10n.t('Copied the image with transparency.'),
 		copyFailed: vscode.l10n.t('Copy failed: {0}', '{0}'),
 	};
 }

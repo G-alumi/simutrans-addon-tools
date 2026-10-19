@@ -553,7 +553,7 @@ function copyImage(id, transparent) {
   });
   // クリックの直後に書き込みを始める必要があるので、画像の取得とPNGへの変換はPromiseのまま渡す
   navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-    .then(() => toast(transparent ? L10N.imageCopiedTransparent : L10N.imageCopied))
+    .then(() => toast(L10N.imageCopied))
     .catch((err) => toast(errorText(err), true));
 }
 

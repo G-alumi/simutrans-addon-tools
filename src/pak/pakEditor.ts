@@ -5,6 +5,7 @@ import { childLabels, xrefTarget } from './labels';
 import { decodeString, FieldValue, getName, PakNode, parsePak } from './parser';
 import { OBJ_TYPES, SCHEMAS } from './schema';
 import { getWebviewContent } from './webview';
+import { errorMessage } from '../shared/localize';
 
 /** 画面に渡すノード。画像のピクセルは大きいので含めず、画面から要求されたときに送る */
 interface ViewNode {
@@ -68,7 +69,7 @@ export class PakEditorProvider implements vscode.CustomReadonlyEditorProvider {
 				);
 				await webview.postMessage({ type: 'load', tree });
 			} catch (err) {
-				await webview.postMessage({ type: 'error', message: err instanceof Error ? err.message : String(err) });
+				await webview.postMessage({ type: 'error', message: errorMessage(err) });
 			}
 		};
 
