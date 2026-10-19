@@ -15,6 +15,11 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 
 表示言語は英語と日本語に対応しています。VS Code の表示言語に合わせて切り替わります。
 
+## インストール
+
+1. [Releases](https://github.com/G-alumi/simutrans-addon-tools/releases/latest) から `.vsix` ファイルをダウンロード
+2. VS Code の拡張機能ビューで「…」→「VSIX からのインストール…」を選び、ダウンロードしたファイルを指定
+
 ## 画像ビュワー
 
 ![画像ビュワー](images/image-viewer.png)

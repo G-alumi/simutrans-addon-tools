@@ -15,6 +15,11 @@ A VS Code extension for Simutrans addon development. It includes three features:
 
 The UI is available in English and Japanese. It follows the VS Code display language.
 
+## Installation
+
+1. Download the `.vsix` file from [Releases](https://github.com/G-alumi/simutrans-addon-tools/releases/latest)
+2. In the VS Code Extensions view, choose "..." → "Install from VSIX..." and select the downloaded file
+
 ## Image viewer
 
 ![Image viewer](images/image-viewer.png)

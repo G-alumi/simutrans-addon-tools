@@ -2,8 +2,13 @@
   "name": "simutrans-addon-tools",
   "displayName": "%displayName%",
   "description": "%description%",
-  "version": "0.0.1",
+  "publisher": "G-alumi",
+  "version": "1.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/G-alumi/simutrans-addon-tools.git"
+  },
   "engines": {
     "vscode": "^1.117.0"
   },
