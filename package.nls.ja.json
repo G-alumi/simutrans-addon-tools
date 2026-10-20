@@ -5,5 +5,6 @@
   "customEditor.pakViewer": "Simutrans pakビュワー",
   "config.pakSize": "datの画像をプレビューするときの1マスの大きさ(pakサイズ。128など)。オブジェクトに `cell_size=` があればそちらを使う",
   "config.pakSizeOverrides": "datファイルごとのpakサイズ。ワークスペースのフォルダからの相対パスのglobで指定し、最初に一致したものを `#simutrans-addon-tools.pakSize#` より優先する。例: `{ \"pak256/**\": 256 }`",
-  "config.imagePreview": "datの画像の指定にマウスを乗せたとき、そのマスの画像を表示する"
+  "config.imagePreview": "datの画像の指定にマウスを乗せたとき、そのマスの画像を表示する",
+  "config.diagnostics.ignoreReferences": "ワークスペースの外で定義されている参照先の名前。`obj/名前` で書く(例: `good/Kohle`)。補完の候補に出す。既定値はSimutrans本体に組み込みの貨物"
 }

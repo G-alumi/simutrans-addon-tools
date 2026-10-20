@@ -92,6 +92,12 @@ export function isImagePreviewEnabled(document: vscode.TextDocument): boolean {
 	return vscode.workspace.getConfiguration(SECTION, document.uri).get<boolean>('imagePreview', true);
 }
 
+/** 設定 diagnostics.ignoreReferences のうち、その種類の名前(obj/名前 の 名前 の部分) */
+export function getIgnoredReferenceNames(document: vscode.TextDocument, obj: string): string[] {
+	const list = vscode.workspace.getConfiguration(SECTION, document.uri).get<string[]>('diagnostics.ignoreReferences', []);
+	return list.filter((e) => e.startsWith(`${obj}/`)).map((e) => e.slice(obj.length + 1));
+}
+
 /** ホバーの「プレビューを隠す/表示」から呼ばれる。今と逆の値を、選んだ場所に保存する */
 export async function toggleImagePreview(uri: string): Promise<void> {
 	const document = await vscode.workspace.openTextDocument(vscode.Uri.parse(uri));

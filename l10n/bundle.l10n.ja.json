@@ -66,5 +66,15 @@
   "Where to save pak size {0}": "pakサイズ {0} の保存先",
   "Choose where to save the setting": "設定の保存先を選んでください",
   "Saved, but the pattern \"{0}\" in pakSizeOverrides takes precedence for this file ({1}px).": "保存しましたが、このファイルには pakSizeOverrides のパターン「{0}」が優先されます({1}px)",
-  "Saved, but the workspace setting takes precedence.": "保存しましたが、ワークスペースの設定が優先されます"
+  "Saved, but the workspace setting takes precedence.": "保存しましたが、ワークスペースの設定が優先されます",
+  "Name of {0}": "{0} の名前",
+  "Integer": "整数",
+  "Decimal": "小数",
+  "0 or 1": "0 か 1",
+  "Text": "文字列",
+  "Image": "画像",
+  "Coordinates (x,y)": "座標(x,y)",
+  "Integers separated by commas": ", 区切りの整数",
+  "Climates": "気候",
+  "Sound number or file name": "音の番号かファイル名"
 }

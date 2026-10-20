@@ -54,6 +54,16 @@ export class NameIndex implements vscode.Disposable {
 		return result;
 	}
 
+	/** その種類の名前の一覧(重複なし) */
+	async namesOf(obj: string): Promise<string[]> {
+		await this.ready;
+		const result = new Set<string>();
+		for (const { names } of this.files.values()) {
+			names.filter((e) => e.obj === obj).forEach((e) => result.add(e.name));
+		}
+		return [...result];
+	}
+
 	/** その種類と名前を参照しているところを返す */
 	async references(name: string, obj: string): Promise<ReferenceEntry[]> {
 		await this.ready;

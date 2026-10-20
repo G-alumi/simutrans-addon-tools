@@ -128,6 +128,16 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 | `way`(トンネル) | `obj=way` |
 | `fields`, `fields[n]` | `obj=field` |
 
+### 補完
+
+- **キー**: 行頭で、そのオブジェクトの `obj=` の種類で使えるキーを表示(添字は選択肢から入力)
+- **値**: `=` の後で、`obj=` の種類、`waytype=` などの決まった語、参照先の名前を表示
+  - 参照先の名前は、ワークスペース内の `name=` と、設定 `diagnostics.ignoreReferences` の名前
+  - `constraint` では `none` / `any` も表示
+- **気候**: `climates=` では、`,` の後にも気候名を表示
+
+キーの一覧は Simutrans Standard の makeobj に合わせています。
+
 ## 設定
 
 | 設定 | 既定値 | 内容 |
@@ -135,6 +145,7 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 | `simutrans-addon-tools.pakSize` | `128` | 画像プレビューのpakサイズ(`cell_size=` がある場合はそちらを優先) |
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | datファイルごとのpakサイズ。ワークスペースフォルダからの相対パスを glob で指定(例: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | 画像指定のホバー時に画像を表示するかどうか |
+| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | ワークスペースの外で定義されている参照先。`obj/名前` で指定し、補完の候補に表示(既定値は本体組み込みの貨物) |
 
 ホバー内のボタンから変更する場合は、保存先を選択できます。
 

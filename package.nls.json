@@ -5,5 +5,6 @@
   "customEditor.pakViewer": "Simutrans pak Viewer",
   "config.pakSize": "The size of one image cell (the pak size, such as 128) used when previewing images from dat files. An object's `cell_size=` takes precedence.",
   "config.pakSizeOverrides": "Pak sizes for specific dat files, as glob patterns relative to the workspace folder. The first matching pattern wins over `#simutrans-addon-tools.pakSize#`. Example: `{ \"pak256/**\": 256 }`",
-  "config.imagePreview": "Show the image of the cell when hovering over an image in dat files."
+  "config.imagePreview": "Show the image of the cell when hovering over an image in dat files.",
+  "config.diagnostics.ignoreReferences": "Names that are referenced but defined outside the workspace, written as `obj/name` (example: `good/Kohle`). They are offered in completion. The default is the goods built into Simutrans."
 }

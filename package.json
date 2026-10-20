@@ -63,6 +63,19 @@
           "default": true,
           "scope": "resource",
           "markdownDescription": "%config.imagePreview%"
+        },
+        "simutrans-addon-tools.diagnostics.ignoreReferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "good/Passagiere",
+            "good/Post",
+            "good/None"
+          ],
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.ignoreReferences%"
         }
       }
     },

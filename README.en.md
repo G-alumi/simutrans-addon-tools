@@ -128,6 +128,16 @@ Only `.dat` files in the workspace are searched. Supported keys:
 | `way` (tunnels) | `obj=way` |
 | `fields`, `fields[n]` | `obj=field` |
 
+### Completion
+
+- **Keys**: at the start of a line, shows the keys available for the object's `obj=` type (subscripts are chosen from a list)
+- **Values**: after `=`, shows `obj=` types, fixed words such as for `waytype=`, and names to reference
+  - Names come from `name=` in the workspace and from the `diagnostics.ignoreReferences` setting
+  - `constraint` also offers `none` / `any`
+- **Climates**: in `climates=`, climate names are also shown after `,`
+
+The key list follows makeobj of Simutrans Standard.
+
 ## Settings
 
 | Setting | Default | Description |
@@ -135,6 +145,7 @@ Only `.dat` files in the workspace are searched. Supported keys:
 | `simutrans-addon-tools.pakSize` | `128` | Pak size for image previews (`cell_size=` takes precedence if present) |
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | Pak size per dat file, as globs relative to the workspace folder (example: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | Whether to show the image when hovering over an image reference |
+| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | Referenced names defined outside the workspace, as `obj/name`; offered in completion (the default is the goods built into Simutrans) |
 
 When changing them from the buttons in the hover, you can choose where to save:
 

@@ -5,6 +5,7 @@ import { ImageHoverProvider, ImageLinkProvider } from './dat/imageLinks';
 import { CHANGE_PAK_SIZE_COMMAND, changePakSize, TOGGLE_IMAGE_PREVIEW_COMMAND, toggleImagePreview } from './dat/settings';
 import { NameIndex } from './dat/nameIndex';
 import { DatDefinitionProvider, DatReferenceHoverProvider, DatReferenceProvider } from './dat/definition';
+import { DatCompletionProvider } from './dat/completion';
 
 export function activate(context: vscode.ExtensionContext) {
 	const nameIndex = new NameIndex();
@@ -13,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.languages.registerDefinitionProvider({ language: 'simutrans-dat' }, new DatDefinitionProvider(nameIndex)),
 		vscode.languages.registerHoverProvider({ language: 'simutrans-dat' }, new DatReferenceHoverProvider(nameIndex)),
 		vscode.languages.registerReferenceProvider({ language: 'simutrans-dat' }, new DatReferenceProvider(nameIndex)),
+		vscode.languages.registerCompletionItemProvider({ language: 'simutrans-dat' }, new DatCompletionProvider(nameIndex), ...DatCompletionProvider.triggerCharacters),
 		vscode.window.registerCustomEditorProvider(
 			ImageEditorProvider.viewType,
 			new ImageEditorProvider(context.extensionUri),
