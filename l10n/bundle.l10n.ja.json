@@ -259,5 +259,22 @@
   "Ground image": "地面の画像",
   "Sound file name": "音のファイル名",
   "Old sound number": "古い音の番号",
-  "Image n": "n 番目の画像"
+  "Image n": "n 番目の画像",
+  "\"{0}\" is not read for obj={1}.": "obj={1} では {0} は読まれません",
+  "No {0} named \"{1}\" was found in the workspace.": "名前が「{1}」の {0} がワークスペース内に見つかりません",
+  "Image file not found: {0}": "画像ファイルが見つかりません: {0}",
+  "Row {0}, column {1} is outside the image ({2}x{3}px, cell size {4}px).": "{0}行{1}列は画像の範囲外です({2}x{3}px、1マス {4}px)",
+  "\"{0}\" has no constraint[{1}]. They can be coupled, but only one side is set.": "「{0}」に constraint[{1}] がありません。連結はできますが、片方だけの設定です",
+  "Cannot be coupled because constraint[{1}] of \"{0}\" does not include this vehicle.": "「{0}」の constraint[{1}] にこの車両がないため、連結できません",
+  "Ignore this warning for this line (add a comment)": "この行の警告を無視(コメントを追加)",
+  "Add {0} to the ignore list": "{0} を無視リストに追加",
+  "Where to add {0} to the ignore list": "{0} を無視リストに追加する場所",
+  "(no name)": "(name なし)",
+  "Place the cursor on the value of name= to rename.": "名前を変更するには、name= の値の上にカーソルを置いてください",
+  "The name cannot be empty or contain line breaks.": "名前を空にしたり、改行を含めたりはできません",
+  "Template: {0}": "ひな形: {0}",
+  "building (city)": "building(町の建物)",
+  "building (station)": "building(駅)",
+  "building (depot)": "building(車庫)",
+  "roadsign (signal)": "roadsign(信号)"
 }

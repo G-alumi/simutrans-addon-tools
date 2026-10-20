@@ -117,6 +117,7 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 - **ホバー**: 参照先の種類・名前と、定義元ファイルへのリンクを表示
 - **F12 / Ctrl+クリック**: 定義元(`name=`)へジャンプ
 - **Shift+F12**: その名前の参照箇所を一覧表示(`name=` の値の上でも使用可)
+- **F2**(`name=` の値の上): 名前と、その名前の参照箇所をまとめて変更(参照先の種類が合うものだけ。翻訳ファイルは変更しない)
 
 検索対象は、ワークスペース内の `.dat` ファイルです。対応しているキーは次のとおりです。
 
@@ -128,8 +129,15 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 | `way`(トンネル) | `obj=way` |
 | `fields`, `fields[n]` | `obj=field` |
 
+### アウトラインと検索
+
+- **アウトライン**(アウトラインビュー・パンくずリスト・Ctrl+Shift+O): オブジェクトごとに `name=` の値と `obj=` の種類を表示
+- **折りたたみ**: `name=` の行から次の区切り線の手前まで
+- **Ctrl+T**: ワークスペース内の `name=` を検索
+
 ### 補完
 
+- **ひな形**: まだキーの無いオブジェクトの行頭で、「ひな形: vehicle」などを選ぶと、その種類のよく使うキーをまとめて入力。Tab で次の値へ移り、画像のファイル名は1か所入力すると全部の行に入る
 - **キー**: 行頭で、そのオブジェクトの `obj=` の種類で使えるキーを、説明付きで表示(添字は選択肢から入力)
 - **値**: `=` の後で、`obj=` の種類、`waytype=` などの決まった語、参照先の名前を表示
   - 参照先の名前は、ワークスペース内の `name=` と、設定 `diagnostics.ignoreReferences` の名前
@@ -140,6 +148,19 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 
 キーの一覧は Simutrans Standard の makeobj に合わせています。
 
+### 警告
+
+開いているdatに、次の警告を表示します(設定で種類ごとにオフにできます)。
+
+- その `obj=` の種類で読まれないキー
+- ワークスペース内に見つからない参照先の名前
+- 見つからない画像ファイル、画像の範囲外のマス
+- 連結設定(`constraint`)の食い違い
+  - 相手側に設定が無い(片方だけの設定): 警告。直前の行にコメント `# @ignore-one-sided` を書くと、次の1行のこの警告を出しません
+  - 相手側の設定に含まれていない(連結できない): エラー
+
+クイックフィックスで、キーや名前を無視リストに追加(保存先は「ワークスペース」「ユーザー」)したり、`# @ignore-one-sided` を追加したりできます。
+
 ## 設定
 
 | 設定 | 既定値 | 内容 |
@@ -147,7 +168,13 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 | `simutrans-addon-tools.pakSize` | `128` | 画像プレビューのpakサイズ(`cell_size=` がある場合はそちらを優先) |
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | datファイルごとのpakサイズ。ワークスペースフォルダからの相対パスを glob で指定(例: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | 画像指定のホバー時に画像を表示するかどうか |
-| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | ワークスペースの外で定義されている参照先。`obj/名前` で指定し、補完の候補に表示(既定値は本体組み込みの貨物) |
+| `simutrans-addon-tools.diagnostics.unknownKey` | `true` | 読まれないキーを警告するか |
+| `simutrans-addon-tools.diagnostics.unresolvedReference` | `true` | 見つからない参照先を警告するか |
+| `simutrans-addon-tools.diagnostics.missingImage` | `true` | 見つからない画像ファイル・範囲外のマスを警告するか |
+| `simutrans-addon-tools.diagnostics.constraintMismatch` | `true` | 連結設定の食い違いを表示するか |
+| `simutrans-addon-tools.diagnostics.constraintMismatchSeverity` | `"error"` | 連結できない設定の強さ(`"error"` / `"warning"`) |
+| `simutrans-addon-tools.diagnostics.ignoreKeys` | `[]` | 警告しないキー。`obj/キー` で種類を絞れる(例: `vehicle/catering_level`) |
+| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | ワークスペースの外で定義されている参照先。`obj/名前` で指定し、警告せず補完の候補に表示(既定値は本体組み込みの貨物) |
 
 ホバー内のボタンから変更する場合は、保存先を選択できます。
 

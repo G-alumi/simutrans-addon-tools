@@ -64,6 +64,46 @@
           "scope": "resource",
           "markdownDescription": "%config.imagePreview%"
         },
+        "simutrans-addon-tools.diagnostics.unknownKey": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.unknownKey%"
+        },
+        "simutrans-addon-tools.diagnostics.unresolvedReference": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.unresolvedReference%"
+        },
+        "simutrans-addon-tools.diagnostics.missingImage": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.missingImage%"
+        },
+        "simutrans-addon-tools.diagnostics.constraintMismatch": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.constraintMismatch%"
+        },
+        "simutrans-addon-tools.diagnostics.constraintMismatchSeverity": {
+          "type": "string",
+          "enum": ["error", "warning"],
+          "default": "error",
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.constraintMismatchSeverity%"
+        },
+        "simutrans-addon-tools.diagnostics.ignoreKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.ignoreKeys%"
+        },
         "simutrans-addon-tools.diagnostics.ignoreReferences": {
           "type": "array",
           "items": {

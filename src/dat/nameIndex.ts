@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DatName, extractNames } from './datDocument';
 import { DatReference, extractReferences } from './references';
+import { extractVehicles, VehicleConstraints } from './checks';
 
 /** 索引の1件 */
 export interface NameEntry extends DatName {
@@ -21,14 +22,18 @@ const READ_CONCURRENCY = 16;
  */
 export class NameIndex implements vscode.Disposable {
 	/** datのURIごとの名前と参照 */
-	private readonly files = new Map<string, { names: NameEntry[]; refs: ReferenceEntry[] }>();
+	private readonly files = new Map<string, { names: NameEntry[]; refs: ReferenceEntry[]; vehicles: VehicleConstraints[] }>();
+	private readonly changed = new vscode.EventEmitter<void>();
 	private readonly disposables: vscode.Disposable[] = [];
+	/** 索引が変わったとき(ファイルごとに呼ばれる) */
+	readonly onDidChange = this.changed.event;
 	/** 最初の読み込みが終わったら解決する */
 	readonly ready: Promise<void>;
 
 	constructor() {
 		const watcher = vscode.workspace.createFileSystemWatcher('**/*.dat');
 		this.disposables.push(
+			this.changed,
 			watcher,
 			watcher.onDidCreate((uri) => this.updateFromDisk(uri)),
 			watcher.onDidChange((uri) => this.updateFromDisk(uri)),
@@ -72,6 +77,28 @@ export class NameIndex implements vscode.Disposable {
 			result.push(...refs.filter((e) => e.name === name && e.obj === obj));
 		}
 		return result;
+	}
+
+	/** 全部の名前 */
+	async allNameEntries(): Promise<NameEntry[]> {
+		await this.ready;
+		return [...this.files.values()].flatMap((f) => f.names);
+	}
+
+	/** 種類と名前の組(`obj/名前`)の一覧 */
+	async allNames(): Promise<Set<string>> {
+		await this.ready;
+		const result = new Set<string>();
+		for (const { names } of this.files.values()) {
+			names.forEach((e) => result.add(`${e.obj}/${e.name}`));
+		}
+		return result;
+	}
+
+	/** 車両の連結の設定の一覧 */
+	async vehicles(): Promise<VehicleConstraints[]> {
+		await this.ready;
+		return [...this.files.values()].flatMap((f) => f.vehicles);
 	}
 
 	private async build(): Promise<void> {
@@ -118,11 +145,15 @@ export class NameIndex implements vscode.Disposable {
 		this.files.set(uri.toString(), {
 			names: extractNames(text).map((n) => ({ ...n, uri })),
 			refs: extractReferences(text).map((r) => ({ ...r, uri })),
+			vehicles: extractVehicles(text),
 		});
+		this.changed.fire();
 	}
 
 	private remove(uri: vscode.Uri) {
-		this.files.delete(uri.toString());
+		if (this.files.delete(uri.toString())) {
+			this.changed.fire();
+		}
 	}
 
 	dispose() {

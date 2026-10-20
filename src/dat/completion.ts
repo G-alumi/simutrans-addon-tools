@@ -3,6 +3,7 @@ import { parseDat } from './datDocument';
 import { CLIMATES, findKeyDef, hasPlaceholder, KeyDef, keyDescription, KeyValue, keyLabel, keysOf, keySnippet } from './keys';
 import { NameIndex } from './nameIndex';
 import { getIgnoredReferenceNames } from './settings';
+import { templateSnippet, TEMPLATES } from './templates';
 
 /** 補完の一覧やホバーに出す、値の種類の説明 */
 export function describeValue(value: KeyValue): string {
@@ -24,7 +25,7 @@ export function describeValue(value: KeyValue): string {
 
 /**
  * datの補完
- * - キーの位置(= より前): そのオブジェクトの obj= の種類のキー
+ * - キーの位置(= より前): そのオブジェクトの obj= の種類のキー。まだキーの無いオブジェクトでは、ひな形も
  * - 値の位置(= より後): obj= の種類、決まった語、参照先の名前(ワークスペースの name= と diagnostics.ignoreReferences)
  */
 export class DatCompletionProvider implements vscode.CompletionItemProvider {
@@ -43,7 +44,8 @@ export class DatCompletionProvider implements vscode.CompletionItemProvider {
 		const obj = others.find((e) => e.key === 'obj')?.value.trim();
 		const eq = line.indexOf('=');
 		if (eq < 0 || position.character <= eq) {
-			return this.keyItems(obj, new Set(others.map((e) => e.key)), position, eq < 0 ? position.character : eq, eq < 0);
+			const keys = this.keyItems(obj, new Set(others.map((e) => e.key)), position, eq < 0 ? position.character : eq, eq < 0);
+			return eq < 0 && others.length === 0 ? [...templateItems(new vscode.Range(position.line, 0, position.line, line.length)), ...keys] : keys;
 		}
 		const items = await this.valueItems(document, obj, line.slice(0, eq).trimEnd().toLowerCase(), line, eq, position);
 		// , で出すのは気候の一覧だけ
@@ -97,6 +99,20 @@ export class DatCompletionProvider implements vscode.CompletionItemProvider {
 		}
 		return items;
 	}
+}
+
+/** ひな形。キーより前に並べる */
+function templateItems(range: vscode.Range): vscode.CompletionItem[] {
+	return TEMPLATES.map((t, i) => {
+		const label = vscode.l10n.t('Template: {0}', vscode.l10n.t(t.title));
+		const item = new vscode.CompletionItem(label, vscode.CompletionItemKind.Snippet);
+		item.insertText = new vscode.SnippetString(templateSnippet(t.text));
+		item.documentation = new vscode.MarkdownString().appendCodeblock(t.text, 'simutrans-dat');
+		item.filterText = `${label} ${t.title}`;
+		item.sortText = ' ' + String(i).padStart(4, '0');
+		item.range = range;
+		return item;
+	});
 }
 
 function withRange(item: vscode.CompletionItem, range: vscode.Range): vscode.CompletionItem {

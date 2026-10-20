@@ -117,6 +117,7 @@ Where another object is specified, such as `freight=` or `constraint[next][0]=`:
 - **Hover**: Show the type and name of the target, with links to the defining files
 - **F12 / Ctrl+click**: Jump to the definition (`name=`)
 - **Shift+F12**: List the references to the name (also works on a `name=` value)
+- **F2** (on a `name=` value): Rename the name and its references together (only references of the matching type; translation files are not changed)
 
 Only `.dat` files in the workspace are searched. Supported keys:
 
@@ -128,8 +129,15 @@ Only `.dat` files in the workspace are searched. Supported keys:
 | `way` (tunnels) | `obj=way` |
 | `fields`, `fields[n]` | `obj=field` |
 
+### Outline and search
+
+- **Outline** (Outline view, breadcrumbs, Ctrl+Shift+O): Shows each object's `name=` value and `obj=` type
+- **Folding**: From the `name=` line to just before the next separator line
+- **Ctrl+T**: Search `name=` in the workspace
+
 ### Completion
 
+- **Templates**: at the start of a line in an object with no keys yet, choosing "Template: vehicle" or similar inserts the commonly used keys for that type. Tab moves to the next value, and typing the image file name once fills it in on every image line
 - **Keys**: at the start of a line, shows the keys available for the object's `obj=` type with descriptions (subscripts are chosen from a list)
 - **Values**: after `=`, shows `obj=` types, fixed words such as for `waytype=`, and names to reference
   - Names come from `name=` in the workspace and from the `diagnostics.ignoreReferences` setting
@@ -140,6 +148,19 @@ Hovering over a key shows its description and value type.
 
 The key list follows makeobj of Simutrans Standard.
 
+### Warnings
+
+Open dat files show the following warnings (each kind can be turned off in the settings):
+
+- Keys that are not read for the object's `obj=` type
+- Referenced names that are not found in the workspace
+- Image files that are not found, and cells outside the image
+- Mismatched coupling settings (`constraint`)
+  - The other vehicle has no setting (only one side is set): a warning. A comment `# @ignore-one-sided` on the line before hides it for the next line
+  - The other vehicle's setting does not include this one (they cannot be coupled): an error
+
+Quick fixes add a key or name to the ignore list (saved to "Workspace" or "User") or add `# @ignore-one-sided`.
+
 ## Settings
 
 | Setting | Default | Description |
@@ -147,7 +168,13 @@ The key list follows makeobj of Simutrans Standard.
 | `simutrans-addon-tools.pakSize` | `128` | Pak size for image previews (`cell_size=` takes precedence if present) |
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | Pak size per dat file, as globs relative to the workspace folder (example: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | Whether to show the image when hovering over an image reference |
-| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | Referenced names defined outside the workspace, as `obj/name`; offered in completion (the default is the goods built into Simutrans) |
+| `simutrans-addon-tools.diagnostics.unknownKey` | `true` | Whether to warn about keys that are not read |
+| `simutrans-addon-tools.diagnostics.unresolvedReference` | `true` | Whether to warn about referenced names that are not found |
+| `simutrans-addon-tools.diagnostics.missingImage` | `true` | Whether to warn about missing image files and cells outside the image |
+| `simutrans-addon-tools.diagnostics.constraintMismatch` | `true` | Whether to show mismatched coupling settings |
+| `simutrans-addon-tools.diagnostics.constraintMismatchSeverity` | `"error"` | Severity of settings with which vehicles cannot be coupled (`"error"` / `"warning"`) |
+| `simutrans-addon-tools.diagnostics.ignoreKeys` | `[]` | Keys not to warn about; `obj/key` limits it to one type (example: `vehicle/catering_level`) |
+| `simutrans-addon-tools.diagnostics.ignoreReferences` | `["good/Passagiere", "good/Post", "good/None"]` | Referenced names defined outside the workspace, as `obj/name`; not warned about and offered in completion (the default is the goods built into Simutrans) |
 
 When changing them from the buttons in the hover, you can choose where to save:
 

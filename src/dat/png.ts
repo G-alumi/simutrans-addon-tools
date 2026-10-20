@@ -17,6 +17,15 @@ export class PngImage {
 		private readonly rows: Buffer,
 	) {}
 
+	/** 画像の大きさだけを読む(IHDR は先頭のチャンク) */
+	static readSize(data: Uint8Array): { width: number; height: number } {
+		const buf = Buffer.from(data.buffer, data.byteOffset, data.byteLength);
+		if (buf.length < 24 || buf.readUInt32BE(0) !== 0x89504e47 || buf.toString('latin1', 12, 16) !== 'IHDR') {
+			throw new LocalizableError('Not a PNG file.');
+		}
+		return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+	}
+
 	static decode(data: Uint8Array): PngImage {
 		const buf = Buffer.from(data.buffer, data.byteOffset, data.byteLength);
 		if (buf.length < 8 || buf.readUInt32BE(0) !== 0x89504e47 || buf.readUInt32BE(4) !== 0x0d0a1a0a) {

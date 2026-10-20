@@ -6,5 +6,11 @@
   "config.pakSize": "datの画像をプレビューするときの1マスの大きさ(pakサイズ。128など)。オブジェクトに `cell_size=` があればそちらを使う",
   "config.pakSizeOverrides": "datファイルごとのpakサイズ。ワークスペースのフォルダからの相対パスのglobで指定し、最初に一致したものを `#simutrans-addon-tools.pakSize#` より優先する。例: `{ \"pak256/**\": 256 }`",
   "config.imagePreview": "datの画像の指定にマウスを乗せたとき、そのマスの画像を表示する",
-  "config.diagnostics.ignoreReferences": "ワークスペースの外で定義されている参照先の名前。`obj/名前` で書く(例: `good/Kohle`)。補完の候補に出す。既定値はSimutrans本体に組み込みの貨物"
+  "config.diagnostics.ignoreReferences": "ワークスペースの外で定義されている参照先の名前。`obj/名前` で書く(例: `good/Kohle`)。見つからなくても警告せず、補完の候補に出す。既定値はSimutrans本体に組み込みの貨物",
+  "config.diagnostics.unknownKey": "その `obj=` の種類で読まれないキーを警告する",
+  "config.diagnostics.unresolvedReference": "参照先(`freight=` や `constraint` など)の名前がワークスペース内に見つからないときに警告する",
+  "config.diagnostics.missingImage": "見つからない画像ファイルと、画像の範囲外のマスを警告する",
+  "config.diagnostics.constraintMismatch": "連結設定(`constraint`)の食い違いを出す。片方だけの設定は警告、連結できない設定はエラー。直前の行にコメント `# @ignore-one-sided` があれば、次の1行の片方だけの設定の警告を出さない",
+  "config.diagnostics.constraintMismatchSeverity": "連結できない設定の強さ",
+  "config.diagnostics.ignoreKeys": "警告しないキー。`obj/キー` で種類を絞れる(例: `vehicle/catering_level`)"
 }

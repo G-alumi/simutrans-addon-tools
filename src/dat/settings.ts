@@ -8,6 +8,7 @@ const MAX_CELL_SIZE = 32766;
 const SECTION = 'simutrans-addon-tools';
 export const CHANGE_PAK_SIZE_COMMAND = 'simutrans-addon-tools.changePakSize';
 export const TOGGLE_IMAGE_PREVIEW_COMMAND = 'simutrans-addon-tools.toggleImagePreview';
+export const ADD_TO_IGNORE_LIST_COMMAND = 'simutrans-addon-tools.addToIgnoreList';
 
 /** 1マスの大きさと、それがどこで決まったか */
 export interface CellSize {
@@ -108,6 +109,26 @@ export async function toggleImagePreview(uri: string): Promise<void> {
 	}
 	await vscode.workspace.getConfiguration(SECTION, document.uri).update('imagePreview', enable, target);
 	if (isImagePreviewEnabled(document) !== enable) {
+		vscode.window.showWarningMessage(vscode.l10n.t('Saved, but the workspace setting takes precedence.'));
+	}
+}
+
+/** クイックフィックスの「無視リストに追加」から呼ばれる。setting は diagnostics.ignoreKeys など */
+export async function addToIgnoreList(uri: string, setting: string, value: string): Promise<void> {
+	const document = await vscode.workspace.openTextDocument(vscode.Uri.parse(uri));
+	const target = await pickTarget(document, vscode.l10n.t('Where to add {0} to the ignore list', value), false);
+	if (target === undefined || target === 'file') {
+		return;
+	}
+	const config = vscode.workspace.getConfiguration(SECTION, document.uri);
+	// 保存先に値が無ければ、今効いている値(ユーザーの値か既定値)に足す
+	const inspected = config.inspect<string[]>(setting);
+	const current = (target === vscode.ConfigurationTarget.Workspace ? inspected?.workspaceValue : undefined)
+		?? inspected?.globalValue ?? inspected?.defaultValue ?? [];
+	if (!current.includes(value)) {
+		await config.update(setting, [...current, value], target);
+	}
+	if (!vscode.workspace.getConfiguration(SECTION, document.uri).get<string[]>(setting, []).includes(value)) {
 		vscode.window.showWarningMessage(vscode.l10n.t('Saved, but the workspace setting takes precedence.'));
 	}
 }
