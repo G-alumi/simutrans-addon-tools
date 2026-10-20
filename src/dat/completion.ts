@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { parseDat } from './datDocument';
-import { CLIMATES, findKeyDef, hasPlaceholder, KeyDef, KeyValue, keyLabel, keysOf, keySnippet } from './keys';
+import { CLIMATES, findKeyDef, hasPlaceholder, KeyDef, keyDescription, KeyValue, keyLabel, keysOf, keySnippet } from './keys';
 import { NameIndex } from './nameIndex';
 import { getIgnoredReferenceNames } from './settings';
 
-/** 補完の一覧に出す、値の種類の説明 */
-function describeValue(value: KeyValue): string {
+/** 補完の一覧やホバーに出す、値の種類の説明 */
+export function describeValue(value: KeyValue): string {
 	if (typeof value === 'object') {
 		return 'ref' in value ? vscode.l10n.t('Name of {0}', `obj=${value.ref}`) : value.words.join(' | ');
 	}
@@ -59,6 +59,10 @@ export class DatCompletionProvider implements vscode.CompletionItemProvider {
 				const item = new vscode.CompletionItem(keyLabel(def), vscode.CompletionItemKind.Property);
 				item.insertText = new vscode.SnippetString(keySnippet(def) + (withEquals ? '=' : ''));
 				item.detail = describeValue(def.value);
+				const description = keyDescription(obj, def);
+				if (description) {
+					item.documentation = vscode.l10n.t(description);
+				}
 				item.range = range;
 				// キー一覧の順に並べる
 				item.sortText = String(i).padStart(4, '0');

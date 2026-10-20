@@ -130,11 +130,13 @@ Only `.dat` files in the workspace are searched. Supported keys:
 
 ### Completion
 
-- **Keys**: at the start of a line, shows the keys available for the object's `obj=` type (subscripts are chosen from a list)
+- **Keys**: at the start of a line, shows the keys available for the object's `obj=` type with descriptions (subscripts are chosen from a list)
 - **Values**: after `=`, shows `obj=` types, fixed words such as for `waytype=`, and names to reference
   - Names come from `name=` in the workspace and from the `diagnostics.ignoreReferences` setting
   - `constraint` also offers `none` / `any`
 - **Climates**: in `climates=`, climate names are also shown after `,`
+
+Hovering over a key shows its description and value type.
 
 The key list follows makeobj of Simutrans Standard.
 
