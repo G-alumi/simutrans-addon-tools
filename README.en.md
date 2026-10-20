@@ -11,7 +11,7 @@ A VS Code extension for Simutrans addon development. It includes three features:
   View the structure, values and images of `.pak` files
 
 - [dat language support](#dat-language-support)  
-  Syntax highlighting, image previews and jumping to name references
+  Syntax highlighting, image previews, jumping to name references, completion and templates, and warnings for keys, references and more
 
 The UI is available in English and Japanese. It follows the VS Code display language.
 
@@ -193,3 +193,14 @@ When changing them from the buttons in the hover, you can choose where to save:
 ## License
 
 [MIT](LICENSE)
+
+## Building
+
+Requires [Node.js](https://nodejs.org/).
+
+```sh
+npm install
+npx @vscode/vsce package
+```
+
+This creates `simutrans-addon-tools-<version>.vsix`.
