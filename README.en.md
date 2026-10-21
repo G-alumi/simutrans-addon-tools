@@ -153,13 +153,14 @@ The key list follows makeobj of Simutrans Standard.
 Open dat files show the following warnings (each kind can be turned off in the settings):
 
 - Keys that are not read for the object's `obj=` type
+- Keys (including subscripts) written more than once in an object (makeobj reads only the first one)
 - Referenced names that are not found in the workspace
 - Image files that are not found, and cells outside the image
 - Mismatched coupling settings (`constraint`)
   - The other vehicle has no setting (only one side is set): a warning. A comment `# @ignore-one-sided` on the line before hides it for the next line
   - The other vehicle's setting does not include this one (they cannot be coupled): an error
 
-Quick fixes add a key or name to the ignore list (saved to "Workspace" or "User") or add `# @ignore-one-sided`.
+Quick fixes add a key or name to the ignore list (saved to "Workspace" or "User") or add `# @ignore-one-sided`. For keys written more than once, they can remove the later line. For constraints that prevent coupling, they can add this vehicle to the other vehicle's `constraint`, or remove this line (later numbers are shifted down).
 
 ## Settings
 
@@ -169,6 +170,7 @@ Quick fixes add a key or name to the ignore list (saved to "Workspace" or "User"
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | Pak size per dat file, as globs relative to the workspace folder (example: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | Whether to show the image when hovering over an image reference |
 | `simutrans-addon-tools.diagnostics.unknownKey` | `true` | Whether to warn about keys that are not read |
+| `simutrans-addon-tools.diagnostics.duplicateKey` | `true` | Whether to warn about keys written more than once |
 | `simutrans-addon-tools.diagnostics.unresolvedReference` | `true` | Whether to warn about referenced names that are not found |
 | `simutrans-addon-tools.diagnostics.missingImage` | `true` | Whether to warn about missing image files and cells outside the image |
 | `simutrans-addon-tools.diagnostics.constraintMismatch` | `true` | Whether to show mismatched coupling settings |

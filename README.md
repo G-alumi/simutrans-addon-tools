@@ -153,13 +153,14 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 開いているdatに、次の警告を表示します(設定で種類ごとにオフにできます)。
 
 - その `obj=` の種類で読まれないキー
+- 1つのオブジェクトに2回以上書かれたキー(添字も含む。makeobj は最初の行だけを読む)
 - ワークスペース内に見つからない参照先の名前
 - 見つからない画像ファイル、画像の範囲外のマス
 - 連結設定(`constraint`)の食い違い
   - 相手側に設定が無い(片方だけの設定): 警告。直前の行にコメント `# @ignore-one-sided` を書くと、次の1行のこの警告を出しません
   - 相手側の設定に含まれていない(連結できない): エラー
 
-クイックフィックスで、キーや名前を無視リストに追加(保存先は「ワークスペース」「ユーザー」)したり、`# @ignore-one-sided` を追加したりできます。
+クイックフィックスで、キーや名前を無視リストに追加(保存先は「ワークスペース」「ユーザー」)したり、`# @ignore-one-sided` を追加したりできます。2回以上書かれたキーでは、後の行を消せます。連結できない設定では、相手の `constraint` にこの車両を追加するか、この行を消せます(後ろの番号は詰めます)。
 
 ## 設定
 
@@ -169,6 +170,7 @@ Simutrans のアドオン開発に役立つ VS Code 拡張機能です。次の3
 | `simutrans-addon-tools.pakSizeOverrides` | `{}` | datファイルごとのpakサイズ。ワークスペースフォルダからの相対パスを glob で指定(例: `{ "pak256/**": 256 }`) |
 | `simutrans-addon-tools.imagePreview` | `true` | 画像指定のホバー時に画像を表示するかどうか |
 | `simutrans-addon-tools.diagnostics.unknownKey` | `true` | 読まれないキーを警告するか |
+| `simutrans-addon-tools.diagnostics.duplicateKey` | `true` | 2回以上書かれたキーを警告するか |
 | `simutrans-addon-tools.diagnostics.unresolvedReference` | `true` | 見つからない参照先を警告するか |
 | `simutrans-addon-tools.diagnostics.missingImage` | `true` | 見つからない画像ファイル・範囲外のマスを警告するか |
 | `simutrans-addon-tools.diagnostics.constraintMismatch` | `true` | 連結設定の食い違いを表示するか |

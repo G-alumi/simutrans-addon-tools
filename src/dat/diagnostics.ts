@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { DatObject, parseDat } from './datDocument';
-import { checkCounterpart, constraintsOf, IGNORE_ONE_SIDED, isIgnoreOneSided, isVehicleName, objOf, opposite, unknownKeys, VehicleConstraints } from './checks';
+import { checkCounterpart, constraintDirOf, constraintsOf, duplicateKeys, IGNORE_ONE_SIDED, isIgnoreOneSided, isVehicleName, objOf, opposite, renumberAfterRemoval, unknownKeys, VehicleConstraints } from './checks';
 import { parseImageRef } from './imageRef';
 import { findKeyDef } from './keys';
 import { NameIndex } from './nameIndex';
@@ -13,7 +13,7 @@ const SOURCE = 'simutrans';
 /** 書き換えてから計算するまでの待ち時間(ミリ秒) */
 const DELAY = 300;
 
-type Code = 'unknownKey' | 'unresolvedReference' | 'missingImage' | 'constraintOneSided' | 'constraintMismatch';
+type Code = 'unknownKey' | 'duplicateKey' | 'unresolvedReference' | 'missingImage' | 'constraintOneSided' | 'constraintMismatch';
 
 /**
  * 開いているdatの警告
@@ -100,6 +100,11 @@ export class DatDiagnostics implements vscode.Disposable {
 			if (config.get<boolean>('diagnostics.unknownKey', true)) {
 				for (const e of unknownKeys(object, ignoreKeys)) {
 					add(new vscode.Range(e.line, 0, e.line, e.key.length), vscode.l10n.t('"{0}" is not read for obj={1}.', e.key, objOf(object)!), 'unknownKey');
+				}
+			}
+			if (config.get<boolean>('diagnostics.duplicateKey', true)) {
+				for (const { entry, first } of duplicateKeys(object)) {
+					add(new vscode.Range(entry.line, 0, entry.line, entry.key.length), vscode.l10n.t('"{0}" is already written on line {1}, so this line is not read.', entry.key, first.line + 1), 'duplicateKey');
 				}
 			}
 			if (checkReferences) {
@@ -232,7 +237,9 @@ function valueRange(e: { line: number; valueStart: number; value: string }): vsc
 export class DatCodeActionProvider implements vscode.CodeActionProvider {
 	static readonly providedCodeActionKinds = [vscode.CodeActionKind.QuickFix];
 
-	provideCodeActions(document: vscode.TextDocument, _range: vscode.Range, context: vscode.CodeActionContext): vscode.CodeAction[] {
+	constructor(private readonly index: NameIndex) {}
+
+	async provideCodeActions(document: vscode.TextDocument, _range: vscode.Range, context: vscode.CodeActionContext): Promise<vscode.CodeAction[]> {
 		const actions: vscode.CodeAction[] = [];
 		const objects = parseDat(document.getText());
 		for (const diagnostic of context.diagnostics) {
@@ -249,6 +256,14 @@ export class DatCodeActionProvider implements vscode.CodeActionProvider {
 				actions.push(ignoreListAction(document, diagnostic, 'diagnostics.ignoreKeys', `${objOf(object)}/${entry.key}`));
 			} else if (diagnostic.code === 'unresolvedReference') {
 				actions.push(ignoreListAction(document, diagnostic, 'diagnostics.ignoreReferences', `${referenceTarget(entry.key, entry.value)}/${entry.value}`));
+			} else if (diagnostic.code === 'duplicateKey') {
+				const action = new vscode.CodeAction(vscode.l10n.t('Remove this line'), vscode.CodeActionKind.QuickFix);
+				action.diagnostics = [diagnostic];
+				action.edit = new vscode.WorkspaceEdit();
+				action.edit.delete(document.uri, lineRange(document, line));
+				actions.push(action);
+			} else if (diagnostic.code === 'constraintMismatch') {
+				actions.push(...await this.constraintActions(document, diagnostic, object, line));
 			} else if (diagnostic.code === 'constraintOneSided') {
 				const action = new vscode.CodeAction(vscode.l10n.t('Ignore this warning for this line (add a comment)'), vscode.CodeActionKind.QuickFix);
 				action.diagnostics = [diagnostic];
@@ -260,6 +275,55 @@ export class DatCodeActionProvider implements vscode.CodeActionProvider {
 		}
 		return actions;
 	}
+
+	/** 連結できない設定: 相手の constraint にこの車両を足す、この行を消す */
+	private async constraintActions(document: vscode.TextDocument, diagnostic: vscode.Diagnostic, object: DatObject, line: number): Promise<vscode.CodeAction[]> {
+		const entry = object.entries.find((e) => e.line === line)!;
+		const dir = constraintDirOf(entry.key);
+		const aName = object.entries.find((e) => e.key === 'name')?.value;
+		if (!dir || !aName) {
+			return [];
+		}
+		const opp = opposite(dir);
+		const actions: vscode.CodeAction[] = [];
+		const targets = await this.index.lookup(entry.value, 'vehicle');
+		for (const target of targets) {
+			const other = await vscode.workspace.openTextDocument(target.uri);
+			const b = parseDat(other.getText()).find((o) => o.startLine <= target.line && target.line < o.endLine);
+			const list = b ? constraintsOf(b, opp) : [];
+			if (checkCounterpart(aName, list.map((e) => e.value)) !== 'mismatch') {
+				continue;
+			}
+			// 同じ名前の車両が複数あるときは、ファイルで見分ける
+			const title = targets.length > 1
+				? vscode.l10n.t('Add this vehicle to constraint[{1}] of "{0}" ({2})', entry.value, opp, vscode.workspace.asRelativePath(target.uri))
+				: vscode.l10n.t('Add this vehicle to constraint[{1}] of "{0}"', entry.value, opp);
+			const action = new vscode.CodeAction(title, vscode.CodeActionKind.QuickFix);
+			action.diagnostics = [diagnostic];
+			action.edit = new vscode.WorkspaceEdit();
+			const eol = other.eol === vscode.EndOfLine.CRLF ? '\r\n' : '\n';
+			action.edit.insert(target.uri, other.lineAt(list[list.length - 1].line).range.end, `${eol}constraint[${opp}][${list.length}]=${aName}`);
+			actions.push(action);
+		}
+
+		const remove = new vscode.CodeAction(vscode.l10n.t('Remove this line'), vscode.CodeActionKind.QuickFix);
+		remove.diagnostics = [diagnostic];
+		remove.edit = new vscode.WorkspaceEdit();
+		remove.edit.delete(document.uri, lineRange(document, line));
+		for (const r of renumberAfterRemoval(object, dir, line)) {
+			const key = object.entries.find((e) => e.line === r.line)!.key;
+			remove.edit.replace(document.uri, new vscode.Range(r.line, 0, r.line, key.length), r.key);
+		}
+		actions.push(remove);
+		return actions;
+	}
+}
+
+/** 行を消すときの範囲(改行も含める) */
+function lineRange(document: vscode.TextDocument, line: number): vscode.Range {
+	return line + 1 < document.lineCount
+		? new vscode.Range(line, 0, line + 1, 0)
+		: new vscode.Range(line > 0 ? document.lineAt(line - 1).range.end : new vscode.Position(line, 0), document.lineAt(line).range.end);
 }
 
 function ignoreListAction(document: vscode.TextDocument, diagnostic: vscode.Diagnostic, setting: string, value: string): vscode.CodeAction {

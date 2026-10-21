@@ -70,6 +70,12 @@
           "scope": "resource",
           "markdownDescription": "%config.diagnostics.unknownKey%"
         },
+        "simutrans-addon-tools.diagnostics.duplicateKey": {
+          "type": "boolean",
+          "default": true,
+          "scope": "resource",
+          "markdownDescription": "%config.diagnostics.duplicateKey%"
+        },
         "simutrans-addon-tools.diagnostics.unresolvedReference": {
           "type": "boolean",
           "default": true,

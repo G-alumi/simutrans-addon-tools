@@ -9,6 +9,7 @@
   "config.diagnostics.ignoreReferences": "ワークスペースの外で定義されている参照先の名前。`obj/名前` で書く(例: `good/Kohle`)。見つからなくても警告せず、補完の候補に出す。既定値はSimutrans本体に組み込みの貨物",
   "config.diagnostics.unknownKey": "その `obj=` の種類で読まれないキーを警告する",
   "config.diagnostics.unresolvedReference": "参照先(`freight=` や `constraint` など)の名前がワークスペース内に見つからないときに警告する",
+  "config.diagnostics.duplicateKey": "1つのオブジェクトに2回以上書かれたキー(添字も含む)を警告する。makeobj は最初の行だけを読む",
   "config.diagnostics.missingImage": "見つからない画像ファイルと、画像の範囲外のマスを警告する",
   "config.diagnostics.constraintMismatch": "連結設定(`constraint`)の食い違いを出す。片方だけの設定は警告、連結できない設定はエラー。直前の行にコメント `# @ignore-one-sided` があれば、次の1行の片方だけの設定の警告を出さない",
   "config.diagnostics.constraintMismatchSeverity": "連結できない設定の強さ",

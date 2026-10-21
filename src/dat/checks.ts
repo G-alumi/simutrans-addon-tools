@@ -27,6 +27,28 @@ export function unknownKeys(object: DatObject, ignoreKeys: readonly string[]): D
 	});
 }
 
+/**
+ * 同じキーが前に書かれている行と、その前の行
+ * makeobj は最初の行だけを読み、後の行は黙って捨てる。<...> の展開を使う行は調べない
+ */
+export function duplicateKeys(object: DatObject): { entry: DatEntry; first: DatEntry }[] {
+	const seen = new Map<string, DatEntry>();
+	const result: { entry: DatEntry; first: DatEntry }[] = [];
+	for (const e of object.entries) {
+		if (e.key.includes('<')) {
+			continue;
+		}
+		const key = normalizeKey(e.key);
+		const first = seen.get(key);
+		if (first) {
+			result.push({ entry: e, first });
+		} else {
+			seen.set(key, e);
+		}
+	}
+	return result;
+}
+
 export type ConstraintDir = 'prev' | 'next';
 
 export function opposite(dir: ConstraintDir): ConstraintDir {
@@ -35,7 +57,8 @@ export function opposite(dir: ConstraintDir): ConstraintDir {
 
 /** 連結の設定。makeobj と同じく [0] から順に、抜けたところか値が空のところまで読む */
 export function constraintsOf(object: DatObject, dir: ConstraintDir): DatEntry[] {
-	const byKey = new Map(object.entries.map((e) => [normalizeKey(e.key), e]));
+	// 同じキーが何度もあれば、makeobj と同じく最初の行を使う
+	const byKey = new Map(object.entries.slice().reverse().map((e) => [normalizeKey(e.key), e]));
 	const result: DatEntry[] = [];
 	for (let i = 0; ; i++) {
 		const entry = byKey.get(`constraint[${dir}][${i}]`);
@@ -44,6 +67,21 @@ export function constraintsOf(object: DatObject, dir: ConstraintDir): DatEntry[]
 		}
 		result.push(entry);
 	}
+}
+
+/** constraint のキーの向き(constraint の行でなければ undefined) */
+export function constraintDirOf(key: string): ConstraintDir | undefined {
+	return /^constraint\[\s*(prev|next)\s*\]/.exec(key)?.[1] as ConstraintDir | undefined;
+}
+
+/**
+ * constraint[dir] の line の行を消すとき、後ろの行に付け直すキー
+ * 番号が抜けると makeobj はそこで読むのをやめるので、1つずつ詰める
+ */
+export function renumberAfterRemoval(object: DatObject, dir: ConstraintDir, line: number): { line: number; key: string }[] {
+	const entries = constraintsOf(object, dir);
+	const i = entries.findIndex((e) => e.line === line);
+	return i < 0 ? [] : entries.slice(i + 1).map((e, k) => ({ line: e.line, key: `constraint[${dir}][${i + k}]` }));
 }
 
 /** constraint の値が車両の名前か(none は「つながる車両なし」、any は「どの車両でも」) */

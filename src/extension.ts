@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.languages.registerFoldingRangeProvider({ language: 'simutrans-dat' }, new DatFoldingRangeProvider()),
 		vscode.languages.registerWorkspaceSymbolProvider(new DatWorkspaceSymbolProvider(nameIndex)),
 		vscode.languages.registerRenameProvider({ language: 'simutrans-dat' }, new DatRenameProvider(nameIndex)),
-		vscode.languages.registerCodeActionsProvider({ language: 'simutrans-dat' }, new DatCodeActionProvider(), { providedCodeActionKinds: DatCodeActionProvider.providedCodeActionKinds }),
+		vscode.languages.registerCodeActionsProvider({ language: 'simutrans-dat' }, new DatCodeActionProvider(nameIndex), { providedCodeActionKinds: DatCodeActionProvider.providedCodeActionKinds }),
 		vscode.window.registerCustomEditorProvider(
 			ImageEditorProvider.viewType,
 			new ImageEditorProvider(context.extensionUri),

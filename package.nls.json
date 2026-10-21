@@ -9,6 +9,7 @@
   "config.diagnostics.ignoreReferences": "Names that are referenced but defined outside the workspace, written as `obj/name` (example: `good/Kohle`). They are not warned about and are offered in completion. The default is the goods built into Simutrans.",
   "config.diagnostics.unknownKey": "Warn about keys that are not read for the object's `obj=` type.",
   "config.diagnostics.unresolvedReference": "Warn about referenced names (such as in `freight=` or `constraint`) that are not found in the workspace.",
+  "config.diagnostics.duplicateKey": "Warn about keys (including subscripts) written more than once in an object. makeobj reads only the first one.",
   "config.diagnostics.missingImage": "Warn about image files that are not found and cells outside the image.",
   "config.diagnostics.constraintMismatch": "Show mismatched coupling settings (`constraint`): a warning when only one side is set, and an error when the vehicles cannot be coupled. A comment `# @ignore-one-sided` on the line before hides the one-sided warning for the next line.",
   "config.diagnostics.constraintMismatchSeverity": "Severity of coupling settings with which the vehicles cannot be coupled.",

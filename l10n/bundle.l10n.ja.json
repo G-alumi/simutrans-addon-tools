@@ -276,5 +276,9 @@
   "building (city)": "building(町の建物)",
   "building (station)": "building(駅)",
   "building (depot)": "building(車庫)",
-  "roadsign (signal)": "roadsign(信号)"
+  "roadsign (signal)": "roadsign(信号)",
+  "Add this vehicle to constraint[{1}] of \"{0}\"": "「{0}」の constraint[{1}] にこの車両を追加",
+  "Add this vehicle to constraint[{1}] of \"{0}\" ({2})": "「{0}」の constraint[{1}] にこの車両を追加({2})",
+  "Remove this line": "この行を消す",
+  "\"{0}\" is already written on line {1}, so this line is not read.": "「{0}」は {1} 行目に書かれているので、この行は読まれません"
 }
